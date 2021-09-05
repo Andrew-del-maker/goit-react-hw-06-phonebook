@@ -1,13 +1,13 @@
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import './Form.css';
 import {  useState } from "react";
 import shortid from "shortid";
 import {addContact} from '../../redux/phonebook/phonebook-action'
 
-function Form({onSubmit}) {
-
-    const [name, setName] = useState('')
-    const [number, setNumber] = useState('')
+function Form() {
+    const dispatch = useDispatch();
+    const [name, setName] = useState('');
+    const [number, setNumber] = useState('');
     
     const nameInputId = shortid.generate();
     const numInputId = shortid.generate();
@@ -26,7 +26,7 @@ function Form({onSubmit}) {
     }
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(name,number);
+        dispatch(addContact(name,number));
         reset();
     }
     const reset = () => {
@@ -70,8 +70,5 @@ function Form({onSubmit}) {
 
 }
 
-const mapDispatchToProps = dispatch => ({
-    onSubmit: (name, phone) =>dispatch(addContact(name,phone))
-})
 
-export default connect(null,mapDispatchToProps)(Form);
+export default Form;

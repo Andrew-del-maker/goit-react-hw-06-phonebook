@@ -1,36 +1,33 @@
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {deleteContact} from '../../redux/phonebook/phonebook-action'
 
-const ContactList = ({ contacts, onDeleteContact }) => (
-    <ul>
-          {contacts.map(({name,id,number}) =>
-              <li key={id}>{name} {number}
-                  <button type="button" onClick={() => onDeleteContact(id)}>Delete</button>
-              </li>
-            )}
-    </ul>
-)
+const ContactList = () => {
+  const filter = useSelector(state => state.contacts.filter);
+  const contacts = useSelector(state => state.contacts.contacts);
 
+  const dispatch = useDispatch();
+
+  
   const getVisibleContacts = (filter, contacts) => {
     
-
+    
     const normalizeFilter = filter.toLowerCase();
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(normalizeFilter),
-    );
+      );
   }
+  
+  const visibleContacts = getVisibleContacts(filter, contacts);
 
-const mapStateToProps = state => {
-    const { filter, contacts } = state.contacts;
-    const visibleContacts = getVisibleContacts(filter, contacts);
-    return {
+  return(
+    <ul>
+          {visibleContacts.map(({name,id,number}) =>
+              <li key={id}>{name} {number}
+                  <button type="button" onClick={() => dispatch(deleteContact(id))}>Delete</button>
+              </li>
+            )}
+    </ul>
+)}
+ 
 
-        contacts: visibleContacts,
-    }
-};
-
-const mapDispatchToProps = dispatch => ({
-    onDeleteContact: (id) => dispatch(deleteContact(id)),
-});
-
-export default connect(mapStateToProps,mapDispatchToProps)(ContactList);
+export default ContactList;
